@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link  type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="static/compare.js"></script>
+</head>
+
+<body>
+  <div class='parent grid-parent'>
+  <h2><a href="/">HOME</a></h2>
+  <label>Label options
+    <select id='labelViewSelector'>
+        <option value="all">all</option>
+        <option value="4-class">4-class</option>
+        <option value="top5">Top 5</option>
+      </select>
+  </label>
+  </div>
+
+  <table>
+      <tr>
+        <th>Video ID</th>
+        <th>Annotator ID</th>
+          <th >Streamer</th>
+          <th >Game</th>
+          <th >Game Chapter</th>
+      </tr>
+        <TR>
+          <td>{{ data.video_id }}</td>
+          <td>
+          {% for annotator in data.annotator_ids %}
+            <span class='annotator_id'>{{ annotator }}</span>,
+          {% endfor %}
+          </td>
+          <td>{{ data.df['streamer'].iloc[0] }}</td>
+          <td>{{ data.df['game'].iloc[0] }}</td>
+          <td>{{ data.df['chapter'].iloc[0] }}</td>
+        </TR>
+    </table>
+  
+  <div class="container" >
+  <video id="video" preload='auto' controls autoplay controlsList="nodownload" width="1200">
+    <source src={{ data.video_path }} type="video/mp4">
+  </video>
+  </div>
+
+  {% if data.df.empty %}
+  <h2>NO ANNOTATION FOR THIS VIDEO</h2>
+  {% else %}
+
+  <div style="overflow:auto"><div id="timeline" ></div></div>
+  
+  <!-- Reference: https://www.quackit.com/html/codes/html_scroll_box.cfm -->
+  <!-- <div class='parent inline-flex-parent'> -->
+  <div class='parent grid-parent'>
+  <!-- <div style="height:250px;overflow:auto;border:8px solid yellowgreen;padding:2%">
+  <table id="annotation-table">
+      <tr>
+        <th >Timestamp</th>
+          <th >Emotion</th>
+          <th >Intensity</th>
+          <th >Is top5?</th>
+          <th >start_in_sec</th>
+          <th >end_in_sec</th>
+          <th >Event Description</th>
+      </tr>
+      {% for index, row in data.df[data.df["annotator_id"]==data.annotator_ids[0]].iterrows() %}
+      <TR onclick="jump( {{ row['start_in_sec'] }} )">
+        <TD class="timestamp">{{row['timestamp']}}</TD>
+        <TD class="emotional-expression" style="background-color: white">{{row['emotion']}}</TD>
+        <TD class="intensity" style="background-color: white">{{row['intensity']}}</TD>
+        {% if row['is_top5_event'] ==  True %}
+        <TD class="top5" style="background-color: white">{{row['is_top5_event'] }}</TD>
+        {% else %}
+        <TD class="top5" style="background-color: white">{{'----'}}</TD>
+        {% endif %}
+          <TD class="start" style="background-color: white">{{row['start_in_sec']}}</TD>
+          <TD class="end" style="background-color: white">{{row['end_in_sec']}}</TD>
+          <TD class="event-description" style="background-color: white">{{row['event_description']}}</TD>
+          
+      </TR>
+      {% endfor %}
+    </table>
+  </div> -->
+  {% for annotator_id in data.annotator_ids %}
+  <div style="height:250px;overflow:auto;border:8px solid yellowgreen;padding:2%">
+        <table class="annotation-table">
+          <tr>
+            <th >Timestamp</th>
+            <th >Emotion</th>
+            <th> 4-class</th>
+            <th >Is top5?</th>
+            <th >Intensity</th>
+            <th >start_in_sec</th>
+            <th >end_in_sec</th>
+            <th >Event Description</th>
+        </tr>
+                {% for index, row in data.df[data.df["annotator_id"]==annotator_id].iterrows() %}
+            <TR onclick="jump({{row['start_in_sec']}})">
+              <TD class="timestamp">{{row['timestamp']}}</TD>
+              <TD class="emotional-expression" style="background-color: white">{{row['emotion']}}</TD>
+              
+              {% if row['4-class'] == 1 %}
+                <TD class="4-class" style="background-color: skyblue">{{row['4-class']}}</TD>
+                {% elif row['4-class'] == -1 %}
+                <TD class="4-class" style="background-color: pink">{{row['4-class']}}</TD>
+                {% else %}
+                <TD class="4-class" style="background-color: gray">{{row['4-class']}}</TD>
+              {% endif%}
+              
+              <TD class="top5" style="background-color: white">{{row['is_top5_event'] }}</TD>
+              
+              <TD class="intensity" style="background-color: white">{{row['intensity']}}</TD>
+               <TD class="start" style="background-color: white">{{row['start_in_sec']}}</TD>
+               <TD class="end" style="background-color: white">{{row['end_in_sec']}}</TD>
+               <TD class="event-description" style="background-color: white">{{row['event_description']}}</TD>
+               
+            </TR>
+            {% endfor %}
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+    <canvas id="canvas"></canvas>
+    {% endif %}
+</body>
+</html>

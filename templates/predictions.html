@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <!--  This element acts as a container for all the stuff you want to include on the 
+            HTML page that isn't the content you are showing to your page's viewers. 
+            This includes things like keywords and a page description that you want 
+            to appear in search results, CSS to style our content, character set 
+            declarations, and more. You'll learn more about this in the next article 
+            in the series. -->
+    <meta charset="utf-8">
+    <title>Video Label Player</title>
+
+  </head>
+  <body>
+    {% for filename, kwargs in data %}
+    <ul>
+        <li>Video {{kwargs['video_id']}}: <a href="/view-prediction={{filename}}">
+             {{filename}}
+        </a></li>
+    </ul>
+    {% endfor %}
+
+  </body>
+</html>

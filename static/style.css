@@ -1,0 +1,39 @@
+table, th, td {
+    border: 1px solid black;
+  }
+
+.cuteness{background-color: #f032e6}
+.startle{background-color: #e6194b}
+.surprise{background-color: #469990}
+.frustration{background-color: #3cb44b}
+.happiness{background-color: #ffe119}
+.excitement{background-color: #aaffc3}
+.relief{background-color: #42d4f4}
+.wonder{background-color: #800000}
+.amusement{background-color: #4363d8}
+.insight_fiero{background-color: #f58231}
+.moved{background-color: #9a6324}
+.puzzlement{background-color: #808000}
+.na{background-color: #000000}
+.no-pred{background-color: grey}
+
+.current-row{background-color: orange;}
+
+.container {
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.item {
+    width: 10em;
+}
+.grid-parent {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr
+  }
+      .inline-flex-parent {
+    display: inline-flex;
+  }
+  
+

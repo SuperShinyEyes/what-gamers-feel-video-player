@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link  type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="static/annotate.js"></script>
+
+  
+</head>
+
+<body>
+  <h2><a href="/">HOME</a></h2>
+  <p id="current_time_display">0</p>
+    <ul>
+      <li>Unravel <span id='video_id'>{{ data.video_id }}</span> <a href="{{ data.df['link_with_timestamp'][0] }}">{{ data.df['link_with_timestamp'][0] }}</a> </li>
+      <li>Annotator <span id='annotator_id'>{{ annotator_id }}</span></li>
+    </ul>
+
+    <div class="container" >
+    <video id="video" preload='auto' controls autoplay controlsList="nodownload" width="1200">
+        <source src={{ data.video_path }} type="video/mp4">
+    </video>
+    </div>
+
+    {% if data.df.empty %}
+    <h2>NO ANNOTATION FOR THIS VIDEO</h2>
+    {% else %}
+
+    <div style="overflow:auto">
+    <div id="timeline" ></div>
+    </div>
+    <!-- Reference: https://www.quackit.com/html/codes/html_scroll_box.cfm -->
+    <div style="height:250px;overflow:auto;border:8px solid yellowgreen;padding:2%">
+    <table id="annotation-table">
+        <tr>
+            <th >Streamer</th>
+            <th >Game</th>
+            <th >Game Chapter</th>
+            <th >Emotion</th>
+            <th >Intensity</th>
+            <th >Is top5?</th>
+            <th >Timestamp</th>
+            <th >start_in_sec</th>
+            <th >end_in_sec</th>
+            <th >Event Description</th>
+            <th>row_index</th>
+        </tr>
+        {% for index, row in data.df.iterrows() %}
+        <tr onclick="jumpToTableRowIndex({{index + 1}})">
+          <td class="streamer">{{row['streamer']}}</td>
+          <td class="game">{{row['game']}}</td>
+          <td class="chapter">{{row['chapter']}}</td>
+          <td class="emotional-expression" style="background-color: white">{{row['emotion']}}</td>
+          <td class="intensity" style="background-color: white">{{row['intensity']}}</td>
+          {% if row['is_top5_event'] ==  True %}
+          <td class="top5" style="background-color: white">{{row['is_top5_event'] }}</td>
+          {% else %}
+          <td class="top5" style="background-color: white">{{'----'}}</td>
+          {% endif %}
+           <td class="timestamp" style="background-color: white">{{row['timestamp']}}</td>
+           <td class="start" style="background-color: white">{{row['start_in_sec']}}</td>
+           <td class="end" style="background-color: white">{{row['end_in_sec']}}</td>
+           <td class="event-description" style="background-color: white">{{row['event_description']}}</td>
+           <td class="row-index">{{index}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+  </div>
+    {% endif %}
+</body>
+</html>
